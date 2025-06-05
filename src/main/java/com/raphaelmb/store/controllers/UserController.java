@@ -1,5 +1,6 @@
 package com.raphaelmb.store.controllers;
 
+import com.raphaelmb.store.dtos.ChangePasswordRequest;
 import com.raphaelmb.store.dtos.RegisterUserRequest;
 import com.raphaelmb.store.dtos.UpdateUserRequest;
 import com.raphaelmb.store.dtos.UserDto;
@@ -7,6 +8,7 @@ import com.raphaelmb.store.mappers.UserMapper;
 import com.raphaelmb.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -63,6 +65,19 @@ public class UserController {
         if (user == null) return ResponseEntity.notFound().build();
 
         userRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        if (!user.getPassword().equals(request.getOldPassword())) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
 
         return ResponseEntity.noContent().build();
     }
