@@ -47,11 +47,13 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}")
+    @Operation(summary = "Gets cart by ID")
     public CartDto getCart(@PathVariable UUID cartId) {
         return cartService.getCart(cartId);
     }
 
     @PutMapping("/{cartId}/items/{productId}")
+    @Operation(summary = "Updates item from cart")
     public CartItemDto updateItem(
             @PathVariable("cartId") UUID cartId,
             @PathVariable("productId") Long productId,
@@ -62,6 +64,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
+    @Operation(summary = "Removes item from cart")
     public ResponseEntity<?> removeItem(@PathVariable("cartId") UUID cartId, @PathVariable("productId") Long productId) {
         cartService.removeItem(cartId, productId);
 
@@ -69,6 +72,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
+    @Operation(summary = "Clears cart")
     public ResponseEntity<?> clearCart(@PathVariable("cartId") UUID cartId) {
         cartService.clearCart(cartId);
 

@@ -6,6 +6,8 @@ import com.raphaelmb.store.dtos.UpdateUserRequest;
 import com.raphaelmb.store.dtos.UserDto;
 import com.raphaelmb.store.mappers.UserMapper;
 import com.raphaelmb.store.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -20,11 +22,13 @@ import java.util.Set;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
+@Tag(name = "Users")
 public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @GetMapping
+    @Operation(summary = "Gets all users")
     public Iterable<UserDto> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
         if (!Set.of("name", "email").contains(sort)) sort = "name";
 
@@ -32,6 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Gets user by ID")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
@@ -40,6 +45,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Registers a new user")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
         if (userRepository.existsByEmail(request.getEmail())) return ResponseEntity.badRequest().body(Map.of("email", "Email is already registered"));
 
@@ -53,6 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Updates a user")
     public ResponseEntity<UserDto> updateUser(@PathVariable(name = "id") Long id, @RequestBody UpdateUserRequest request) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
@@ -64,6 +71,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletes user")
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") Long id) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
@@ -74,6 +82,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/change-password")
+    @Operation(summary = "Changes user's password")
     public ResponseEntity<Void> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request) {
         var user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
