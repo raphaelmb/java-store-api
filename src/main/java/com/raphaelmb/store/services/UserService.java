@@ -1,0 +1,68 @@
+package com.raphaelmb.store.services;
+
+import com.raphaelmb.store.dtos.ChangePasswordRequest;
+import com.raphaelmb.store.dtos.RegisterUserRequest;
+import com.raphaelmb.store.dtos.UpdateUserRequest;
+import com.raphaelmb.store.dtos.UserDto;
+import com.raphaelmb.store.exceptions.EmailAlreadyRegisteredException;
+import com.raphaelmb.store.exceptions.UserNotAuthorizedException;
+import com.raphaelmb.store.exceptions.UserNotFoundException;
+import com.raphaelmb.store.mappers.UserMapper;
+import com.raphaelmb.store.repositories.UserRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+@Service
+@AllArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public Iterable<UserDto> getAllUsers(String sort) {
+        return userRepository.findAll(Sort.by(sort)).stream().map(userMapper::toDto).toList();
+    }
+
+    public UserDto getUserByID(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        return userMapper.toDto(user);
+    }
+
+    public UserDto registerUser(RegisterUserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) throw new EmailAlreadyRegisteredException();
+
+        var user = userMapper.toEntity(request);
+        userRepository.save(user);
+
+        return userMapper.toDto(user);
+    }
+
+    public UserDto updateUser(Long id, UpdateUserRequest request) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        userMapper.update(request, user);
+        userRepository.save(user);
+
+        return userMapper.toDto(user);
+    }
+
+    public void deleteUser(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        userRepository.deleteById(id);
+    }
+
+    public void changePassword(Long id, ChangePasswordRequest request) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        if (!user.getPassword().equals(request.getOldPassword())) throw new UserNotAuthorizedException();
+
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+    }
+}
