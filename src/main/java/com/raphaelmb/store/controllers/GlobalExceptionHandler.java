@@ -1,5 +1,8 @@
 package com.raphaelmb.store.controllers;
 
+import com.raphaelmb.store.exceptions.*;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,5 +20,50 @@ public class GlobalExceptionHandler {
         exception.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintErrors(ConstraintViolationException exception) {
+        var errors = new HashMap<String, String>();
+
+        exception.getConstraintViolations().forEach(error -> {
+            String fieldName = error.getPropertyPath().toString();
+            if (fieldName.contains(".")) {
+                fieldName = fieldName.substring(fieldName.lastIndexOf('.') + 1);
+            }
+            errors.put(fieldName, error.getMessage());
+        });
+
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "User not found"));
+    }
+
+    @ExceptionHandler(EmailAlreadyRegisteredException.class)
+    public ResponseEntity<Map<String, String>> handleEmailAlreadyRegistered() {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Email already registered"));
+    }
+
+    @ExceptionHandler(UserNotAuthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotAuthorized() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not authorized"));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Category not found"));
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFound() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Cart not found"));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Something went wrong"));
     }
 }
