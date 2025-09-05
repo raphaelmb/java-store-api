@@ -6,4 +6,4 @@ spring:
     username: admin
     password: admin
   jpa:
-    show-sql: true
+    show-sql: false

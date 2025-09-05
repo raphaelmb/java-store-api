@@ -11,15 +11,19 @@ import com.raphaelmb.store.mappers.UserMapper;
 import com.raphaelmb.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public Iterable<UserDto> getAllUsers(String sort) {
+    public List<UserDto> getAllUsers(String sort) {
         return userRepository.findAll(Sort.by(sort)).stream().map(userMapper::toDto).toList();
     }
 
@@ -34,6 +38,7 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) throw new EmailAlreadyRegisteredException();
 
         var user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
         return userMapper.toDto(user);

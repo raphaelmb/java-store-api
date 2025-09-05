@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -27,7 +28,7 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Gets all users")
-    public ResponseEntity<Iterable<UserDto>> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
+    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
         if (!Set.of("name", "email").contains(sort)) sort = "name";
 
         var users = userService.getAllUsers(sort);
