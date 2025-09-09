@@ -7,6 +7,7 @@ import com.raphaelmb.store.dtos.UpdateCartItemRequest;
 import com.raphaelmb.store.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +29,9 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
+    @Operation(summary = "", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder) {
         var cartDto = cartService.createCart();
 
@@ -37,7 +41,9 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/items")
-    @Operation(summary = "Adds a product to the cart")
+    @Operation(summary = "Adds a product to the cart", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<CartItemDto> addToCart(
             @Parameter(description = "The ID of the cart") @PathVariable UUID cartId,
             @Valid @RequestBody AddItemToCartRequest request) {
@@ -47,7 +53,9 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}")
-    @Operation(summary = "Gets cart by ID")
+    @Operation(summary = "Gets cart by ID", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<CartDto> getCart(@PathVariable UUID cartId) {
         var cartDto = cartService.getCart(cartId);
 
@@ -55,7 +63,9 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}/items/{productId}")
-    @Operation(summary = "Updates item from cart")
+    @Operation(summary = "Updates item from cart", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<CartItemDto> updateItem(
             @PathVariable("cartId") UUID cartId,
             @PathVariable("productId") @Positive Long productId,
@@ -66,7 +76,9 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    @Operation(summary = "Removes item from cart")
+    @Operation(summary = "Removes item from cart", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<Void> removeItem(
             @PathVariable("cartId") UUID cartId,
             @PathVariable("productId") @Positive Long productId) {
@@ -76,11 +88,12 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
-    @Operation(summary = "Clears cart")
+    @Operation(summary = "Clears cart", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<Void> clearCart(@PathVariable("cartId") UUID cartId) {
         cartService.clearCart(cartId);
 
         return ResponseEntity.noContent().build();
     }
-
 }

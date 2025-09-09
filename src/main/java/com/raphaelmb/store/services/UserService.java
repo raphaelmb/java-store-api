@@ -70,4 +70,11 @@ public class UserService {
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
     }
+
+    public UserDto getUserByEmail(String email) {
+        var user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        return userMapper.toDto(user);
+    }
 }

@@ -5,6 +5,7 @@ import com.raphaelmb.store.dtos.ProductDto;
 import com.raphaelmb.store.dtos.UpdateProductRequest;
 import com.raphaelmb.store.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -33,7 +34,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Gets product by ID")
+    @Operation(summary = "Gets product by ID", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<ProductDto> getProduct(@PathVariable @Positive Long id) {
         var product = productService.getProductById(id);
 
@@ -41,7 +44,9 @@ public class ProductController {
     }
 
     @PostMapping
-    @Operation(summary = "Creates a new product")
+    @Operation(summary = "Creates a new product", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductRequest request, UriComponentsBuilder uriBuilder) {
         var productDto = productService.createProduct(request);
 
@@ -51,7 +56,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Updates a product")
+    @Operation(summary = "Updates a product", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<ProductDto> updateProduct(@PathVariable(name = "id") @Positive Long id, @Valid @RequestBody UpdateProductRequest request) {
         var productDto = productService.updateProduct(id, request);
 
@@ -59,7 +66,9 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletes a product")
+    @Operation(summary = "Deletes a product", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<Void> deleteProduct(@PathVariable(name = "id") @Positive Long id) {
         productService.deleteProduct(id);
 
