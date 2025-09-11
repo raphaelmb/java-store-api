@@ -3,6 +3,7 @@ package com.raphaelmb.store.controllers;
 import com.raphaelmb.store.dtos.JwtResponse;
 import com.raphaelmb.store.dtos.LoginRequest;
 import com.raphaelmb.store.dtos.UserDto;
+import com.raphaelmb.store.services.AuthService;
 import com.raphaelmb.store.services.JwtService;
 import com.raphaelmb.store.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,17 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     @Operation(summary = "Authenticates a user")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        var user = userService.getUserByEmail(request.getEmail());
-
-        var token = jwtService.generateToken(user);
+        var token = authService.generateToken(request.getEmail());
 
         return ResponseEntity.ok(new JwtResponse(token));
     }

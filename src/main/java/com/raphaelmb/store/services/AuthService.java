@@ -14,11 +14,19 @@ import java.util.Collections;
 @AllArgsConstructor
 public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final UserService userService;
+    private JwtService jwtService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new User(user.getEmail(), user.getPassword(), Collections.emptyList());
+    }
+
+    public String generateToken(String email) {
+        var user = userService.getUserByEmail(email);
+
+        return jwtService.generateToken(user);
     }
 }
