@@ -16,3 +16,5 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
+  accessTokenExpiration: 300 # 5 minutes in seconds
+  refreshTokenExpiration: 604800 # 7 days in seconds

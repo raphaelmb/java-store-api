@@ -1,30 +1,36 @@
 package com.raphaelmb.store.services;
 
+import com.raphaelmb.store.config.JwtConfig;
 import com.raphaelmb.store.dtos.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtConfig jwtConfig;
 
-    public String generateToken(UserDto user) {
-        final long tokenExpiration = 86400; // 1 day in seconds
+    public String generateAccessToken(UserDto user) {
+        return generateToken(user, jwtConfig.getAccessTokenExpiration());
+    }
 
+    public String generateRefreshToken(UserDto user) {
+        return generateToken(user, jwtConfig.getRefreshTokenExpiration());
+    }
+
+    private String generateToken(UserDto user, long tokenExpiration) {
         return Jwts.builder()
                 .subject(user.getId().toString())
                 .claim("email", user.getEmail())
                 .claim("name", user.getName())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(jwtConfig.getSecretKey())
                 .compact();
     }
 
@@ -42,7 +48,7 @@ public class JwtService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .verifyWith(jwtConfig.getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

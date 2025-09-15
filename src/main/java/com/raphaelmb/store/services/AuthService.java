@@ -8,14 +8,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserService userService;
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -24,9 +26,12 @@ public class AuthService implements UserDetailsService {
         return new User(user.getEmail(), user.getPassword(), Collections.emptyList());
     }
 
-    public String generateToken(String email) {
+    public List<String> generateToken(String email) {
         var user = userService.getUserByEmail(email);
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-        return jwtService.generateToken(user);
+        return Arrays.asList(accessToken, refreshToken);
     }
+
 }
