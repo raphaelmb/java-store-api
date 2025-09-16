@@ -8,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -26,12 +24,13 @@ public class AuthService implements UserDetailsService {
         return new User(user.getEmail(), user.getPassword(), Collections.emptyList());
     }
 
-    public List<String> generateToken(String email) {
+    public TokenResponse generateTokens(String email) {
         var user = userService.getUserByEmail(email);
         var accessToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
-        return Arrays.asList(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
+    public record TokenResponse(Jwt accessToken, Jwt refreshToken) {}
 }

@@ -4,6 +4,7 @@ import com.raphaelmb.store.dtos.ChangePasswordRequest;
 import com.raphaelmb.store.dtos.RegisterUserRequest;
 import com.raphaelmb.store.dtos.UpdateUserRequest;
 import com.raphaelmb.store.dtos.UserDto;
+import com.raphaelmb.store.entities.Role;
 import com.raphaelmb.store.exceptions.EmailAlreadyRegisteredException;
 import com.raphaelmb.store.exceptions.UserNotAuthorizedException;
 import com.raphaelmb.store.exceptions.UserNotFoundException;
@@ -39,6 +40,7 @@ public class UserService {
 
         var user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         return userMapper.toDto(user);

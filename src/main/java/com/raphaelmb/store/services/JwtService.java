@@ -15,35 +15,34 @@ import java.util.Date;
 public class JwtService {
     private final JwtConfig jwtConfig;
 
-    public String generateAccessToken(UserDto user) {
+    public Jwt generateAccessToken(UserDto user) {
         return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    public String generateRefreshToken(UserDto user) {
+    public Jwt generateRefreshToken(UserDto user) {
         return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
-    private String generateToken(UserDto user, long tokenExpiration) {
-        return Jwts.builder()
-                .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("name", user.getName())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
-                .signWith(jwtConfig.getSecretKey())
-                .compact();
-    }
-
-    public boolean validateToken(String token) {
+    public Jwt parseToken(String token) {
         try {
-            return getClaims(token).getExpiration().after(new Date());
-        } catch (JwtException ex) {
-            return false;
+            var claims = getClaims(token);
+            return new Jwt(claims, jwtConfig.getSecretKey());
+        } catch (JwtException e) {
+            return null;
         }
     }
 
-    public Long getUserIdFromToken(String token) {
-        return Long.valueOf(getClaims(token).getSubject());
+    private Jwt generateToken(UserDto user, long tokenExpiration) {
+        var claims = Jwts.claims()
+                .subject(user.getId().toString())
+                .add("email", user.getEmail())
+                .add("name", user.getName())
+                .add("role", user.getRole())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
+                .build();
+
+        return new Jwt(claims, jwtConfig.getSecretKey());
     }
 
     private Claims getClaims(String token) {

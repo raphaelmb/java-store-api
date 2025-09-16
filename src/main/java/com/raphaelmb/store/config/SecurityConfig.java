@@ -1,5 +1,6 @@
 package com.raphaelmb.store.config;
 
+import com.raphaelmb.store.entities.Role;
 import com.raphaelmb.store.filters.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(c -> {
                     c
                             .requestMatchers(prefixV1 + "/carts/**").permitAll()
+                            .requestMatchers(prefixV1 + "/admin/**").hasRole(Role.ADMIN.name())
                             .requestMatchers(HttpMethod.POST,prefixV1 + "/users").permitAll()
                             .requestMatchers(HttpMethod.POST,prefixV1 + "/auth/login").permitAll()
                             .requestMatchers(HttpMethod.POST,prefixV1 + "/auth/refresh").permitAll()
@@ -63,6 +65,9 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c -> {
                     c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                    c.accessDeniedHandler(((request, response, accessDeniedException) ->
+                            response.setStatus(HttpStatus.FORBIDDEN.value()))
+                    );
                 });
 
         return http.build();
