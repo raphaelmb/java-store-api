@@ -19,8 +19,8 @@ public class CheckoutController {
 
     @PostMapping
     public ResponseEntity<CheckoutResponse> checkout(@Valid @RequestBody CheckoutRequest request) {
-        var orderId = checkoutService.getCartWithItems(request.getCartId());
+        var checkout = checkoutService.checkout(request);
 
-        return ResponseEntity.ok(new CheckoutResponse(orderId));
+        return ResponseEntity.ok(checkout);
     }
 }

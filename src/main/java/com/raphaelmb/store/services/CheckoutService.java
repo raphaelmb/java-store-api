@@ -1,5 +1,7 @@
 package com.raphaelmb.store.services;
 
+import com.raphaelmb.store.dtos.CheckoutRequest;
+import com.raphaelmb.store.dtos.CheckoutResponse;
 import com.raphaelmb.store.entities.Cart;
 import com.raphaelmb.store.entities.Order;
 import com.raphaelmb.store.entities.OrderItem;
@@ -19,31 +21,18 @@ public class CheckoutService {
     private final OrderService orderService;
     private final CartService cartService;
 
-    public Long getCartWithItems(UUID cartId) {
-        var cart = cartService.getCartWithItems(cartId);
+    public CheckoutResponse checkout(CheckoutRequest request) {
+        var cart = cartService.getCartWithItems(request.getCartId());
         if (cart == null) throw new CartNotFoundException();
 
-        if (cart.getItems().isEmpty()) throw new CartIsEmptyException();
+        if (cart.isEmpty()) throw new CartIsEmptyException();
 
-        var order = new Order();
-        order.setTotalPrice(cart.getTotalPrice());
-        order.setStatus(OrderStatus.PENDING);
-        order.setCustomer(authService.getCurrentUser());
-
-        cart.getItems().forEach(item -> {
-            var orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(item.getProduct());
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setTotalPrice(item.getTotalPrice());
-            orderItem.setUnitPrice(item.getProduct().getPrice());
-            order.getItems().add(orderItem);
-        });
+        var order = Order.fromCart(cart, authService.getCurrentUser());
 
         orderService.saveOrder(order);
 
         cartService.clearCart(cart.getId());
 
-        return order.getId();
+        return new CheckoutResponse(order.getId());
     }
 }
