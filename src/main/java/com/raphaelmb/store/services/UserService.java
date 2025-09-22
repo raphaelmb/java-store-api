@@ -5,6 +5,7 @@ import com.raphaelmb.store.dtos.RegisterUserRequest;
 import com.raphaelmb.store.dtos.UpdateUserRequest;
 import com.raphaelmb.store.dtos.UserDto;
 import com.raphaelmb.store.entities.Role;
+import com.raphaelmb.store.entities.User;
 import com.raphaelmb.store.exceptions.EmailAlreadyRegisteredException;
 import com.raphaelmb.store.exceptions.UserNotAuthorizedException;
 import com.raphaelmb.store.exceptions.UserNotFoundException;
@@ -33,6 +34,13 @@ public class UserService {
         if (user == null) throw new UserNotFoundException();
 
         return userMapper.toDto(user);
+    }
+
+    public User getCurrentUser(Long id) {
+        var user = userRepository.findById(id).orElse(null);
+        if (user == null) throw new UserNotFoundException();
+
+        return user;
     }
 
     public UserDto registerUser(RegisterUserRequest request) {

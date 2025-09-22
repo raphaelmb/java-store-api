@@ -2,6 +2,7 @@ package com.raphaelmb.store.services;
 
 import com.raphaelmb.store.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,4 +34,11 @@ public class AuthService implements UserDetailsService {
     }
 
     public record TokenResponse(Jwt accessToken, Jwt refreshToken) {}
+
+    public com.raphaelmb.store.entities.User getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = (Long) authentication.getPrincipal();
+
+        return userService.getCurrentUser(userId);
+    }
 }

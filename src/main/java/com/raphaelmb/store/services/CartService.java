@@ -78,4 +78,8 @@ public class CartService {
 
         cartRepository.save(cart);
     }
+
+    public Cart getCartWithItems(UUID id) {
+        return cartRepository.getCartWithItems(id).orElse(null);
+    }
 }
