@@ -1,16 +1,40 @@
 package com.raphaelmb.store.services;
 
+import com.raphaelmb.store.dtos.OrderDto;
 import com.raphaelmb.store.entities.Order;
+import com.raphaelmb.store.exceptions.OrderNotFoundException;
+import com.raphaelmb.store.mappers.OrderMapper;
 import com.raphaelmb.store.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final AuthService authService;
+    private final OrderMapper orderMapper;
 
     public void saveOrder(Order order) {
         orderRepository.save(order);
+    }
+
+    public List<OrderDto> getAllOrders() {
+        var user = authService.getCurrentUser();
+        var orders = orderRepository.getOrdersByCustomer(user);
+
+        return orders.stream().map(orderMapper::toDto).toList();
+    }
+
+    public OrderDto getOrder(Long orderId) {
+        var order = orderRepository.getOrderWithItems(orderId).orElseThrow(OrderNotFoundException::new);
+
+        var user = authService.getCurrentUser();
+        if (!order.isPlacedBy(user)) throw new AccessDeniedException("You don't have access to this order");
+
+        return orderMapper.toDto(order);
     }
 }
