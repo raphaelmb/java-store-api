@@ -18,3 +18,10 @@ jwt:
   secret: ${JWT_SECRET}
   accessTokenExpiration: 300 # 5 minutes in seconds
   refreshTokenExpiration: 604800 # 7 days in seconds
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+  webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
+
+websiteUrl: http://localhost:4242 # placeholder value
+

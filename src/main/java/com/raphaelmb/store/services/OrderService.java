@@ -37,4 +37,12 @@ public class OrderService {
 
         return orderMapper.toDto(order);
     }
+
+    public void deleteOrder(Order order) {
+        orderRepository.delete(order);
+    }
+
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+    }
 }

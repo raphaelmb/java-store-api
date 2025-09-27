@@ -2,6 +2,7 @@ package com.raphaelmb.store.controllers;
 
 import com.raphaelmb.store.dtos.ErrorDto;
 import com.raphaelmb.store.exceptions.*;
+import com.raphaelmb.store.payments.PaymentException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,6 +91,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleAccessDenied(Exception ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorDto(ex.getMessage()));
     }
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorDto> handlePaymentException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDto(ex.getMessage()));
+    }
+
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGenericException(Exception ex) {

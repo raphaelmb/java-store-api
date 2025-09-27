@@ -1,4 +1,4 @@
-package com.raphaelmb.store.dtos;
+package com.raphaelmb.store.payments;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
