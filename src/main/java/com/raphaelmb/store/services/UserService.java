@@ -30,17 +30,13 @@ public class UserService {
     }
 
     public UserDto getUserByID(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) throw new UserNotFoundException();
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         return userMapper.toDto(user);
     }
 
     public User getCurrentUser(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) throw new UserNotFoundException();
-
-        return user;
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     public UserDto registerUser(RegisterUserRequest request) {
@@ -55,8 +51,7 @@ public class UserService {
     }
 
     public UserDto updateUser(Long id, UpdateUserRequest request) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) throw new UserNotFoundException();
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         userMapper.update(request, user);
         userRepository.save(user);
@@ -65,15 +60,13 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) throw new UserNotFoundException();
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         userRepository.deleteById(id);
     }
 
     public void changePassword(Long id, ChangePasswordRequest request) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) throw new UserNotFoundException();
+        var user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         if (!user.getPassword().equals(request.getOldPassword())) throw new UserNotAuthorizedException();
 
@@ -82,8 +75,7 @@ public class UserService {
     }
 
     public UserDto getUserByEmail(String email) {
-        var user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) throw new UserNotFoundException();
+        var user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
 
         return userMapper.toDto(user);
     }

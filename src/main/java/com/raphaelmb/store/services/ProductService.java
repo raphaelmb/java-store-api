@@ -33,15 +33,13 @@ public class ProductService {
     }
 
     public ProductDto getProductById(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) throw new ProductNotFoundException();
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
         return productMapper.toDto(product);
     }
 
     public ProductDto createProduct(CreateProductRequest request) {
-        var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
-        if (category == null) throw new CategoryNotFoundException();
+        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
         var product = productMapper.toEntity(request);
         product.setCategory(category);
@@ -51,11 +49,9 @@ public class ProductService {
     }
 
     public ProductDto updateProduct(Long id, UpdateProductRequest request) {
-        var category = categoryRepository.findById(request.getCategoryId()).orElse(null);
-        if (category == null) throw new CategoryNotFoundException();
+        var category = categoryRepository.findById(request.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) throw new ProductNotFoundException();
+        var product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
         productMapper.update(request, product);
         product.setCategory(category);
@@ -65,8 +61,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) throw new ProductNotFoundException();
+        productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
         productRepository.deleteById(id);
     }

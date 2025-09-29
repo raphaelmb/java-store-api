@@ -28,11 +28,11 @@ public class CartService {
     }
 
     public CartItemDto addToCart(UUID cartId, Long productId) {
-        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
-        if (cart == null) throw new CartNotFoundException();
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
+        // if (cart == null) throw new CartNotFoundException();
 
-        var product = productRepository.findById(productId).orElse(null);
-        if (product == null) throw new ProductNotFoundException();
+        var product = productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+        // if (product == null) throw new ProductNotFoundException();
 
         var cartItem = cart.addItem(product);
 
@@ -42,15 +42,15 @@ public class CartService {
     }
 
     public CartDto getCart(UUID cartId) {
-        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
-        if (cart == null) throw new CartNotFoundException();
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
+        //if (cart == null) throw new CartNotFoundException();
 
         return cartMapper.toDto(cart);
     }
 
     public CartItemDto updateItem(UUID cartId, Long productId, Integer quantity) {
-        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
-        if (cart == null) throw new CartNotFoundException();
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
+        // if (cart == null) throw new CartNotFoundException();
 
         var cartItem = cart.getItem(productId);
         if (cartItem == null) throw new ProductNotFoundException();
@@ -62,8 +62,7 @@ public class CartService {
     }
 
     public void removeItem(UUID cartId, Long productId) {
-        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
-        if (cart == null) throw new CartNotFoundException();
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
 
         cart.removeItem(productId);
 
@@ -71,8 +70,7 @@ public class CartService {
     }
 
     public void clearCart(UUID cartId) {
-        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
-        if (cart == null) throw new CartNotFoundException();
+        var cart = cartRepository.getCartWithItems(cartId).orElseThrow(CartNotFoundException::new);
 
         cart.clear();
 
