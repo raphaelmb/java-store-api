@@ -1,12 +1,8 @@
 spring:
   application:
     name: store
-  datasource:
-    url: jdbc:mysql://localhost:3306/store_api?createDatabaseIfNotExist=true
-    username: admin
-    password: admin
-  jpa:
-    show-sql: false
+  profiles:
+    active: dev
 
 springdoc:
   swagger-ui:
@@ -22,6 +18,3 @@ jwt:
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
   webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
-
-websiteUrl: http://localhost:4242 # placeholder value
-
