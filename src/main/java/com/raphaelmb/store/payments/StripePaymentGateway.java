@@ -1,8 +1,7 @@
 package com.raphaelmb.store.payments;
 
-import com.raphaelmb.store.entities.Order;
-import com.raphaelmb.store.entities.OrderItem;
-import com.raphaelmb.store.entities.PaymentStatus;
+import com.raphaelmb.store.orders.Order;
+import com.raphaelmb.store.orders.OrderItem;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;

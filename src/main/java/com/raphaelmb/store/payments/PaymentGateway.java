@@ -1,6 +1,6 @@
 package com.raphaelmb.store.payments;
 
-import com.raphaelmb.store.entities.Order;
+import com.raphaelmb.store.orders.Order;
 
 import java.util.Optional;
 

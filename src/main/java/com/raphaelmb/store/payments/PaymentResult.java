@@ -1,6 +1,5 @@
 package com.raphaelmb.store.payments;
 
-import com.raphaelmb.store.entities.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

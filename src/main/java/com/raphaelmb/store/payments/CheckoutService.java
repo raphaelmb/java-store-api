@@ -1,9 +1,11 @@
 package com.raphaelmb.store.payments;
 
-import com.raphaelmb.store.entities.Order;
-import com.raphaelmb.store.exceptions.CartIsEmptyException;
-import com.raphaelmb.store.exceptions.CartNotFoundException;
-import com.raphaelmb.store.services.*;
+import com.raphaelmb.store.auth.AuthService;
+import com.raphaelmb.store.carts.CartService;
+import com.raphaelmb.store.orders.Order;
+import com.raphaelmb.store.carts.CartIsEmptyException;
+import com.raphaelmb.store.carts.CartNotFoundException;
+import com.raphaelmb.store.orders.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

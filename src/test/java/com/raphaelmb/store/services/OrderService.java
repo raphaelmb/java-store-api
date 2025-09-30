@@ -1,7 +1,7 @@
 package com.raphaelmb.store.services;
 
-import com.raphaelmb.store.entities.Order;
-import com.raphaelmb.store.repositories.OrderRepository;
+import com.raphaelmb.store.orders.Order;
+import com.raphaelmb.store.orders.OrderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
