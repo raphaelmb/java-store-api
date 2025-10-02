@@ -24,7 +24,7 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    @Operation(summary = "", responses = {
+    @Operation(summary = "Creates Cart", responses = {
             @ApiResponse()
     })
     public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder) {

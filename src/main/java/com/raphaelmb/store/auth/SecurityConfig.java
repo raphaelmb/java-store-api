@@ -1,12 +1,9 @@
-package com.raphaelmb.store.config;
+package com.raphaelmb.store.auth;
 
 import com.raphaelmb.store.common.SecurityRules;
-import com.raphaelmb.store.users.Role;
-import com.raphaelmb.store.auth.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;

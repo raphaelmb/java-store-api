@@ -47,8 +47,7 @@ public class User {
     }
 
     public void removeAddress(Address address) {
-        addresses.remove(address);
-        address.setUser(null);
+        if (addresses.remove(address)) address.setUser(null);
     }
 
     @ManyToMany
@@ -57,12 +56,15 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-
     @Builder.Default
     private Set<Product> favoriteProducts = new HashSet<>();
 
     public void addFavoriteProduct(Product product) {
         favoriteProducts.add(product);
+    }
+
+    public void removeFavoriteProduct(Product product) {
+        favoriteProducts.remove(product);
     }
 
     @Override

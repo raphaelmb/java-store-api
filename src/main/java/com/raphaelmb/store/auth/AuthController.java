@@ -4,6 +4,7 @@ import com.raphaelmb.store.users.LoginRequest;
 import com.raphaelmb.store.users.UserDto;
 import com.raphaelmb.store.users.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -42,6 +43,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @Operation(summary = "Refreshes JWT", responses = {
+            @ApiResponse()
+    })
     public ResponseEntity<JwtResponse> refresh(@CookieValue(value = "refreshToken") String refreshToken) {
         var jwt = jwtService.parseToken(refreshToken);
         if (jwt == null || jwt.isExpired()) {
