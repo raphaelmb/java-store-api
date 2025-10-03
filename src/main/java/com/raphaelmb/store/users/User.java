@@ -66,12 +66,4 @@ public class User {
     public void removeFavoriteProduct(Product product) {
         favoriteProducts.remove(product);
     }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "name = " + name + ", " +
-                "email = " + email + ")";
-    }
 }

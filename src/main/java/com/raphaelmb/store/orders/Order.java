@@ -40,6 +40,8 @@ public class Order {
     private Set<OrderItem> items = new LinkedHashSet<>();
 
     public static Order fromCart(Cart cart, User customer) {
+        if (cart == null || customer == null) throw new IllegalArgumentException("Cart or customer cannot be null");
+
         var order = new Order();
         order.setCustomer(customer);
         order.setStatus(PaymentStatus.PENDING);
@@ -54,6 +56,8 @@ public class Order {
     }
 
     public boolean isPlacedBy(User customer) {
+        if (this.customer == null || customer == null) return false;
+
         return this.customer.equals(customer);
     }
 }
