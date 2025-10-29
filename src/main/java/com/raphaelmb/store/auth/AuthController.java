@@ -5,6 +5,7 @@ import com.raphaelmb.store.users.UserDto;
 import com.raphaelmb.store.users.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -29,6 +30,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Authenticates a user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200")
+    })
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
@@ -43,8 +47,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "Refreshes JWT", responses = {
-            @ApiResponse()
+    @Operation(summary = "Refreshes JWT")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "401")
     })
     public ResponseEntity<JwtResponse> refresh(@CookieValue(value = "refreshToken") String refreshToken) {
         var jwt = jwtService.parseToken(refreshToken);

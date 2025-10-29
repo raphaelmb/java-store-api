@@ -2,6 +2,7 @@ package com.raphaelmb.store.products;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -23,6 +24,9 @@ public class ProductController {
 
     @GetMapping
     @Operation(summary = "Gets all products")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200")
+    })
     public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(required = false, name = "categoryId") Byte categoryId) {
         var products = productService.getAllProducts(categoryId);
 
@@ -30,8 +34,10 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Gets product by ID", responses = {
-            @ApiResponse()
+    @Operation(summary = "Gets product by ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<ProductDto> getProduct(@PathVariable @Positive Long id) {
         var product = productService.getProductById(id);
@@ -40,8 +46,9 @@ public class ProductController {
     }
 
     @PostMapping
-    @Operation(summary = "Creates a new product", responses = {
-            @ApiResponse()
+    @Operation(summary = "Creates a new product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
     })
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductRequest request, UriComponentsBuilder uriBuilder) {
         var productDto = productService.createProduct(request);
@@ -52,8 +59,10 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Updates a product", responses = {
-            @ApiResponse()
+    @Operation(summary = "Updates a product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<ProductDto> updateProduct(@PathVariable(name = "id") @Positive Long id, @Valid @RequestBody UpdateProductRequest request) {
         var productDto = productService.updateProduct(id, request);
@@ -62,8 +71,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletes a product", responses = {
-            @ApiResponse()
+    @Operation(summary = "Deletes a product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<Void> deleteProduct(@PathVariable(name = "id") @Positive Long id) {
         productService.deleteProduct(id);

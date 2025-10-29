@@ -2,6 +2,7 @@ package com.raphaelmb.store.users;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -23,8 +24,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @Operation(summary = "Gets all users", responses = {
-            @ApiResponse(responseCode = "200"),
+    @Operation(summary = "Gets all users")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200")
     })
     public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
         if (!Set.of("name", "email").contains(sort)) sort = "name";
@@ -35,8 +37,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Gets user by ID", responses = {
-            @ApiResponse()
+    @Operation(summary = "Gets user by ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<UserDto> getUser(@PathVariable @Positive Long id) {
         var user = userService.getUserByID(id);
@@ -45,8 +49,10 @@ public class UserController {
     }
 
     @PostMapping
-    @Operation(summary = "Registers a new user", responses = {
-            @ApiResponse()
+    @Operation(summary = "Registers a new user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<UserDto> registerUser(@Valid @RequestBody RegisterUserRequest request, UriComponentsBuilder uriBuilder) {
         var userDto = userService.registerUser(request);
@@ -57,8 +63,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Updates a user", responses = {
-            @ApiResponse()
+    @Operation(summary = "Updates a user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<UserDto> updateUser(@PathVariable(name = "id") @Positive Long id, @Valid @RequestBody UpdateUserRequest request) {
         var user = userService.updateUser(id, request);
@@ -67,8 +75,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Deletes user", responses = {
-            @ApiResponse()
+    @Operation(summary = "Deletes user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") @Positive Long id) {
         userService.deleteUser(id);
@@ -77,8 +87,10 @@ public class UserController {
     }
 
     @PostMapping("/{id}/change-password")
-    @Operation(summary = "Changes user's password", responses = {
-            @ApiResponse(),
+    @Operation(summary = "Changes user's password")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<Void> changePassword(@PathVariable @Positive Long id, @Valid @RequestBody ChangePasswordRequest request) {
         userService.changePassword(id, request);

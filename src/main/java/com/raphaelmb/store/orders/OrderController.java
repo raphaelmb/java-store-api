@@ -2,6 +2,7 @@ package com.raphaelmb.store.orders;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import jakarta.validation.constraints.Positive;
@@ -22,8 +23,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    @Operation(summary = "List orders", responses = {
-            @ApiResponse()
+    @Operation(summary = "List orders")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
     })
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         var result = orderService.getAllOrders();
@@ -32,13 +34,14 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    @Operation(summary = "Gets order by id", responses = {
-            @ApiResponse()
+    @Operation(summary = "Gets order by id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<OrderDto> getOrder(@PathVariable(name = "orderId") @Positive Long orderId) {
         var result = orderService.getOrder(orderId);
 
         return ResponseEntity.ok(result);
     }
-
 }

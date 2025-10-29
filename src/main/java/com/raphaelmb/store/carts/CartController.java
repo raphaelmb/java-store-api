@@ -3,6 +3,7 @@ package com.raphaelmb.store.carts;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -24,8 +25,9 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping
-    @Operation(summary = "Creates Cart", responses = {
-            @ApiResponse()
+    @Operation(summary = "Creates Cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
     })
     public ResponseEntity<CartDto> createCart(UriComponentsBuilder uriBuilder) {
         var cartDto = cartService.createCart();
@@ -36,8 +38,10 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/items")
-    @Operation(summary = "Adds a product to the cart", responses = {
-            @ApiResponse()
+    @Operation(summary = "Adds a product to the cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<CartItemDto> addToCart(
             @Parameter(description = "The ID of the cart") @PathVariable UUID cartId,
@@ -48,8 +52,10 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}")
-    @Operation(summary = "Gets cart by ID", responses = {
-            @ApiResponse()
+    @Operation(summary = "Gets cart by ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<CartDto> getCart(@PathVariable UUID cartId) {
         var cartDto = cartService.getCart(cartId);
@@ -58,8 +64,10 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}/items/{productId}")
-    @Operation(summary = "Updates item from cart", responses = {
-            @ApiResponse()
+    @Operation(summary = "Updates item from cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<CartItemDto> updateItem(
             @PathVariable("cartId") UUID cartId,
@@ -71,8 +79,10 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
-    @Operation(summary = "Removes item from cart", responses = {
-            @ApiResponse()
+    @Operation(summary = "Removes item from cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<Void> removeItem(
             @PathVariable("cartId") UUID cartId,
@@ -83,8 +93,10 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/items")
-    @Operation(summary = "Clears cart", responses = {
-            @ApiResponse()
+    @Operation(summary = "Clears cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404")
     })
     public ResponseEntity<Void> clearCart(@PathVariable("cartId") UUID cartId) {
         cartService.clearCart(cartId);

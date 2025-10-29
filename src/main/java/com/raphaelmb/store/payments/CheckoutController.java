@@ -3,6 +3,7 @@ package com.raphaelmb.store.payments;
 import com.raphaelmb.store.orders.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +21,21 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
     private final OrderService orderService;
 
-
-    @Operation(summary = "Creates checkout", responses = {
-            @ApiResponse()
-    })
     @PostMapping
+    @Operation(summary = "Creates checkout")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+    })
     public ResponseEntity<CheckoutResponse> checkout(@Valid @RequestBody CheckoutRequest request) {
             var checkout = checkoutService.checkout(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(checkout);
     }
 
-    @Operation(summary = "Payment webhook", responses = {
-            @ApiResponse()
-    })
     @PostMapping("/webhook")
+    @Operation(summary = "Payment webhook")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+    })
     public ResponseEntity<Void> handleWebhook(
             @RequestHeader Map<String, String> headers,
             @RequestBody String payload
