@@ -22,7 +22,7 @@ COPY --from=build /app/pom.xml .
 RUN mvn dependency:copy-dependencies -DoutputDirectory=deps && \
     jdeps --ignore-missing-deps -q --multi-release 21 --print-module-deps \
           --class-path 'deps/*' app.jar > jre-deps.info && \
-    jlink --add-modules $(cat jre-deps.info) \
+    jlink --add-modules $(cat jre-deps.info),java.naming,java.security.jgss,java.security.sasl,jdk.crypto.ec,jdk.crypto.cryptoki,java.sql \
           --strip-debug \
           --no-man-pages \
           --no-header-files \
@@ -46,8 +46,6 @@ RUN apk add --no-cache libc6-compat
 ENV PATH="/opt/java/bin:${PATH}"
 ENV JAVA_HOME="/opt/java"
 
-# Expose port (adjust as needed)
 EXPOSE 8080
 
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
